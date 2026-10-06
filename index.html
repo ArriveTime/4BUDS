@@ -1,3 +1,4 @@
+HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,7 +49,7 @@
             background: #0b0e14;
             color: #e2e8f0;
             border: 1px solid #2b3b54;
-            padding: 8px 16px;
+            padding: 10px 18px;
             font-family: inherit;
             font-size: 0.85rem;
             cursor: pointer;
@@ -63,7 +64,7 @@
             background: #0b0e14;
             border: 1px solid #2b3b54;
             color: #e2e8f0;
-            padding: 8px;
+            padding: 10px;
             font-family: inherit;
             width: 100%;
             box-sizing: border-box;
@@ -72,13 +73,6 @@
         .footer-note {
             font-size: 0.75rem;
             color: #525e6f;
-        }
-        .hidden {
-            display: none !important;
-        }
-        .highlight {
-            color: #e2e8f0;
-            font-weight: bold;
         }
         .key-display {
             background: #111722;
@@ -111,15 +105,15 @@
     <div id="page-1">
         <h1>Are you ready 4Buds.com?</h1>
         <div class="btn-group">
-            <button type="button" onclick="goToPage(2)">YES</button>
-            <button type="button" onclick="alert('Access declined. Session closed.')">NO</button>
+            <button onclick="showPage('page-2')">YES</button>
+            <button onclick="alert('Access declined. Session closed.')">NO</button>
         </div>
         <hr>
         <div class="footer-note">We are not a government organization.</div>
     </div>
 
     <!-- PAGE 2: PROTOCOL -->
-    <div id="page-2" class="hidden">
+    <div id="page-2" style="display: none;">
         <h2>4BUDS.COM // PROTOCOL</h2>
         <p>We are not a government organization. We are a Movement.</p>
         <p>The 4Buds.com qualification sequence is a 6-week candidate assessment evaluation. Exclusivity is absolute. Few earn placement.</p>
@@ -133,17 +127,17 @@
         </ol>
         <hr>
         <div class="btn-group">
-            <button type="button" onclick="goToPage(3)">ACCEPT PROTOCOL</button>
-            <button type="button" onclick="goToPage(1)">ABORT</button>
+            <button onclick="showPage('page-3')">ACCEPT PROTOCOL</button>
+            <button onclick="showPage('page-1')">ABORT</button>
         </div>
     </div>
 
     <!-- PAGE 3: CANDIDATE INITIALIZATION -->
-    <div id="page-3" class="hidden">
+    <div id="page-3" style="display: none;">
         <h2>4BUDS.COM // TERMINAL INITIALIZATION</h2>
         <p>CANDIDATE RECORD PARAMETERS:</p>
         
-        <form id="init-form" onsubmit="handleRegistration(event)">
+        <form onsubmit="initTerminal(event)">
             <label style="font-size: 0.75rem;">FULL NAME</label>
             <input type="text" id="candidate-name" required placeholder="E.G. JOHN DOE">
 
@@ -154,7 +148,7 @@
             <input type="text" id="candidate-zip" required placeholder="E.G. 23185">
 
             <div class="btn-group">
-                <button type="submit" id="submit-btn">INITIALIZE EVALUATION</button>
+                <button type="submit">INITIALIZE EVALUATION</button>
             </div>
         </form>
         <hr>
@@ -162,9 +156,9 @@
     </div>
 
     <!-- OPERATIVE TERMINAL SCREEN -->
-    <div id="page-terminal" class="hidden">
+    <div id="page-terminal" style="display: none;">
         <h2>4BUDS.COM // OPERATIVE TERMINAL</h2>
-        <p>CANDIDATE ID: <span id="display-candidate-id" class="highlight"></span></p>
+        <p>CANDIDATE ID: <span id="display-candidate-id" style="color: #e2e8f0; font-weight: bold;"></span></p>
         <p>EVALUATION STATUS: <span id="display-status" class="status-active">ACTIVE</span></p>
         <hr>
         
@@ -174,35 +168,38 @@
 
             <div class="key-display">
                 REQUIRED CLEARANCE KEY:<br>
-                <strong id="display-required-key" class="highlight">ALIAS-JIM-VERIFIED</strong>
+                <strong id="display-required-key" style="color: #e2e8f0;">ALIAS-JIM-VERIFIED</strong>
             </div>
 
             <label style="font-size: 0.75rem;">ENTER DIRECTIVE CLEARANCE KEY TO LOG COMPLETION</label>
             <input type="text" id="clearance-key" placeholder="TYPE OR PASTE CLEARANCE KEY HERE">
 
             <div class="btn-group">
-                <button type="button" onclick="verifyKey()">SUBMIT TRANSMISSION</button>
-                <button type="button" onclick="abortCandidate()" style="border-color: #8b0000; color: #ff6b6b;">ABORT SESSION</button>
+                <button onclick="verifyKey()">SUBMIT TRANSMISSION</button>
+                <button onclick="showPage('page-1')" style="border-color: #8b0000; color: #ff6b6b;">ABORT SESSION</button>
             </div>
         </div>
 
-        <!-- COMPLETION CARD (SHOWN ONLY AFTER WEEK 6) -->
-        <div id="completion-content" class="hidden">
+        <!-- COMPLETION CARD (WEEK 6) -->
+        <div id="completion-content" style="display: none;">
             <p style="color: #4caf50; font-weight: bold;">QUALIFICATION COMPLETE // OPERATIVE CREDENTIAL ISSUED</p>
             <div class="card-box">
                 <p><strong>4BUDS.COM // OPERATIVE MEMBERSHIP CARD</strong></p>
-                <p>OPERATIVE ID: <span id="card-id" class="highlight"></span></p>
-                <p>SECTOR CODE: <span id="card-sector" class="highlight"></span></p>
+                <p>OPERATIVE ID: <span id="card-id" style="color: #e2e8f0; font-weight: bold;"></span></p>
+                <p>SECTOR CODE: <span id="card-sector" style="color: #e2e8f0; font-weight: bold;"></span></p>
                 <p>STATUS: <span class="status-complete">VERIFIED MEMBER</span></p>
-                <p style="font-size: 0.7rem; color: #525e6f;">AUTHORIZED FOR RECENT & UNANNOUNCED SECTOR EVENTS.</p>
             </div>
-            <button type="button" onclick="abortCandidate()" style="border-color: #8b0000; color: #ff6b6b;">RESET TERMINAL</button>
+            <button onclick="showPage('page-1')" style="border-color: #8b0000; color: #ff6b6b;">RESET TERMINAL</button>
         </div>
     </div>
 
 </div>
 
 <script>
+    let currentWeek = 1;
+    let currentCandidateID = "";
+    let currentZip = "";
+
     const DIRECTIVES = {
         1: {
             title: "DIRECTIVE 01: THE ALIAS PROTOCOL",
@@ -236,10 +233,80 @@
         }
     };
 
-    function goToPage(target) {
-        document.getElementById('page-1').classList.add('hidden');
-        document.getElementById('page-2').classList.add('hidden');
-        document.getElementById('page-3').classList.add('hidden');
-        document.getElementById('page-terminal').classList.add('hidden');
+    function showPage(pageId) {
+        document.getElementById('page-1').style.display = 'none';
+        document.getElementById('page-2').style.display = 'none';
+        document.getElementById('page-3').style.display = 'none';
+        document.getElementById('page-terminal').style.display = 'none';
 
-        if (target === 'terminal') {
+        document.getElementById(pageId).style.display = 'block';
+    }
+
+    function initTerminal(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('candidate-name').value;
+        const phone = document.getElementById('candidate-phone').value;
+        currentZip = document.getElementById('candidate-zip').value;
+        currentCandidateID = 'BD-' + Math.floor(1000 + Math.random() * 9000);
+        currentWeek = 1;
+
+        // Formsubmit silent trigger
+        fetch("https://formsubmit.co/ajax/All4aim@hotmail.com", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                "Candidate ID": currentCandidateID,
+                "Name": name,
+                "Phone": phone,
+                "ZIP": currentZip,
+                "_subject": "NEW 4BUDS CANDIDATE: " + currentCandidateID
+            })
+        }).catch(err => console.log(err));
+
+        renderTerminal();
+        showPage('page-terminal');
+    }
+
+    function renderTerminal() {
+        document.getElementById('display-candidate-id').innerText = currentCandidateID;
+
+        if (currentWeek > 6) {
+            document.getElementById('directive-content').style.display = 'none';
+            document.getElementById('completion-content').style.display = 'block';
+            document.getElementById('display-status').innerText = 'VERIFIED OPERATIVE';
+            document.getElementById('display-status').className = 'status-complete';
+            document.getElementById('card-id').innerText = currentCandidateID;
+            document.getElementById('card-sector').innerText = currentZip;
+        } else {
+            document.getElementById('directive-content').style.display = 'block';
+            document.getElementById('completion-content').style.display = 'none';
+            document.getElementById('display-status').innerText = 'ACTIVE (STAGE ' + currentWeek + ' / 6)';
+            
+            const dir = DIRECTIVES[currentWeek];
+            document.getElementById('directive-title').innerText = dir.title;
+            document.getElementById('directive-text').innerText = dir.text;
+            document.getElementById('display-required-key').innerText = dir.key;
+            document.getElementById('clearance-key').value = '';
+        }
+    }
+
+    function verifyKey() {
+        const keyInput = document.getElementById('clearance-key').value.trim().toUpperCase();
+
+        if (keyInput === DIRECTIVES[currentWeek].key) {
+            currentWeek++;
+            if (currentWeek <= 6) {
+                alert('CLEARANCE VERIFIED. ADVANCING TO STAGE ' + currentWeek);
+            } else {
+                alert('QUALIFICATION COMPLETE. CREDENTIAL ISSUED.');
+            }
+            renderTerminal();
+        } else {
+            alert('ERR: INVALID CLEARANCE KEY. RE-ENTER REQUIRED KEY.');
+        }
+    }
+</script>
+
+</body>
+</html>
