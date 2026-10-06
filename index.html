@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4Buds.com</title>
+    <style>
+        body {
+            background-color: #0b0e14;
+            color: #9da8b6;
+            font-family: "Courier New", Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+            border: 1px solid #1e2638;
+            padding: 24px;
+            background-color: #05070a;
+        }
+        h1, h2 {
+            color: #e2e8f0;
+            font-size: 1.1rem;
+            font-weight: normal;
+            margin-top: 0;
+            letter-spacing: 1px;
+        }
+        p, li {
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: #8a96a3;
+        }
+        hr {
+            border: 0;
+            border-top: 1px solid #1e2638;
+            margin: 20px 0;
+        }
+        .btn-group {
+            margin: 20px 0;
+        }
+        button, .btn {
+            background: #0b0e14;
+            color: #e2e8f0;
+            border: 1px solid #2b3b54;
+            padding: 8px 16px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #1e2638;
+            color: #ffffff;
+        }
+        input[type="text"], input[type="tel"] {
+            background: #0b0e14;
+            border: 1px solid #2b3b54;
+            color: #e2e8f0;
+            padding: 8px;
+            font-family: inherit;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 12px;
+        }
+        .footer-note {
+            font-size: 0.75rem;
+            color: #525e6f;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- PAGE 1: THE GATE -->
+    <div id="page-1">
+        <h1>Are you ready 4Buds.com?</h1>
+        <div class="btn-group">
+            <button onclick="goToPage(2)">YES</button>
+            <button onclick="alert('Access declined.')">NO</button>
+        </div>
+        <hr>
+        <div class="footer-note">We are not a government organization.</div>
+    </div>
+
+    <!-- PAGE 2: PROTOCOL -->
+    <div id="page-2" class="hidden">
+        <h2>4BUDS.COM // PROTOCOL</h2>
+        <p>We are not a government organization. We are a Movement.</p>
+        <p>The 4Buds.com qualification sequence is a 6-week candidate assessment evaluation. Exclusivity is absolute. Few earn placement.</p>
+        <p><strong>CONDITIONS OF EVALUATION:</strong></p>
+        <ol style="padding-left: 18px;">
+            <li>TIMELINE: 6 consecutive weeks of active execution. Failure to submit clearance keys within designated time windows results in immediate disqualification.</li>
+            <li>VOLUNTARY WITHDRAWAL: You may terminate your application at any time via the TERMINAL interface.</li>
+            <li>INDEPENDENT ENTITY: 4Buds.com holds no affiliation with any municipal, state, or federal government agency.</li>
+            <li>LAWFUL CONDUCT: Candidates must adhere strictly to all local, state, and federal laws. Compliance is mandatory.</li>
+            <li>NON-DISCLOSURE: Directives and candidate clearance codes are strictly non-transferable.</li>
+        </ol>
+        <hr>
+        <div class="btn-group">
+            <button onclick="goToPage(3)">ACCEPT PROTOCOL</button>
+            <button onclick="goToPage(1)">ABORT</button>
+        </div>
+    </div>
+
+    <!-- PAGE 3: INITIALIZATION -->
+    <div id="page-3" class="hidden">
+        <h2>4BUDS.COM // TERMINAL INITIALIZATION</h2>
+        <p>CANDIDATE RECORD PARAMETERS:</p>
+        
+        <label style="font-size: 0.75rem;">FULL NAME</label>
+        <input type="text" id="candidate-name" placeholder="E.G. JOHN DOE">
+
+        <label style="font-size: 0.75rem;">CELLULAR CONTACT</label>
+        <input type="tel" id="candidate-phone" placeholder="E.G. 555-0199">
+
+        <label style="font-size: 0.75rem;">SECTOR / ZIP CODE</label>
+        <input type="text" id="candidate-zip" placeholder="E.G. 23185">
+
+        <div class="btn-group">
+            <button onclick="initializeTerminal()">INITIALIZE EVALUATION</button>
+        </div>
+        <hr>
+        <div class="footer-note">WARNING: SUBMISSION COMMENCES 6-WEEK TIME-LOCK SEQUENCE.</div>
+    </div>
+</div>
+
+<script>
+    function goToPage(pageNum) {
+        document.getElementById('page-1').classList.add('hidden');
+        document.getElementById('page-2').classList.add('hidden');
+        document.getElementById('page-3').classList.add('hidden');
+        document.getElementById('page-' + pageNum).classList.remove('hidden');
+    }
+
+    function initializeTerminal() {
+        const name = document.getElementById('candidate-name').value;
+        if(!name) { alert('PARAMETERS INCOMPLETE'); return; }
+        alert('CANDIDATE RECORD INITIALIZED. TERMINAL TIME-LOCK ACTIVE.');
+    }
+</script>
+
+</body>
+</html>
