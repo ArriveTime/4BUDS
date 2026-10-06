@@ -276,8 +276,8 @@
         localStorage.setItem('4buds_status', 'ACTIVE');
         localStorage.removeItem('4buds_unlock_time');
 
-        // Formsubmit silently forwards registration data
-        fetch("https://formsubmit.co/ajax/All4aim@hotmail.com", {
+        // Formsubmit endpoint updated with secure token e4077274e499dc5b0331d721f4ce7ee5
+        fetch("https://formsubmit.co/ajax/e4077274e499dc5b0331d721f4ce7ee5", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -325,12 +325,10 @@
         // Check 24-hour time-lock state
         const now = Date.now();
         if (unlockTime && now < unlockTime) {
-            // Lock controls and start countdown clock
             document.getElementById('timer-container').style.display = 'block';
             document.getElementById('input-container').style.display = 'none';
             startCountdown(unlockTime);
         } else {
-            // Unlock controls
             document.getElementById('timer-container').style.display = 'none';
             document.getElementById('input-container').style.display = 'block';
             if (timerInterval) clearInterval(timerInterval);
@@ -376,7 +374,7 @@
                 currentWeek++;
                 localStorage.setItem('4buds_week', currentWeek);
                 
-                // Set 24-Hour Time-Lock (24 * 60 * 60 * 1000 ms)
+                // Set 24-Hour Time-Lock
                 const unlockTime = Date.now() + (24 * 60 * 60 * 1000);
                 localStorage.setItem('4buds_unlock_time', unlockTime);
 
