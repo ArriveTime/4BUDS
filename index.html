@@ -391,7 +391,7 @@
     }
 
     function resetTerminal() {
-        if(confirm('Purge candidate terminal record and reset progress?')) {
+        if (confirm('Purge candidate terminal record and reset progress?')) {
             localStorage.clear();
             if (timerInterval) clearInterval(timerInterval);
             showPage('page-1');
