@@ -1,3 +1,4 @@
+HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -64,7 +65,7 @@
             color: #414d5d;
             cursor: not-allowed;
         }
-        input[type="text"], input[type="tel"] {
+        input[type="text"], input[type="email"], input[type="tel"] {
             background: #0b0e14;
             border: 1px solid #2b3b54;
             color: #e2e8f0;
@@ -155,8 +156,8 @@
             <label style="font-size: 0.75rem;">FULL NAME</label>
             <input type="text" id="candidate-name" required placeholder="E.G. JOHN DOE">
 
-            <label style="font-size: 0.75rem;">CELLULAR CONTACT</label>
-            <input type="tel" id="candidate-phone" required placeholder="E.G. 555-0199">
+            <label style="font-size: 0.75rem;">EMAIL ADDRESS</label>
+            <input type="email" id="candidate-email" required placeholder="E.G. CANDIDATE@EMAIL.COM">
 
             <label style="font-size: 0.75rem;">SECTOR / ZIP CODE</label>
             <input type="text" id="candidate-zip" required placeholder="E.G. 23185">
@@ -266,7 +267,7 @@
         e.preventDefault();
         
         const name = document.getElementById('candidate-name').value;
-        const phone = document.getElementById('candidate-phone').value;
+        const email = document.getElementById('candidate-email').value;
         const zip = document.getElementById('candidate-zip').value;
         const candidateID = 'BD-' + Math.floor(1000 + Math.random() * 9000);
 
@@ -283,7 +284,7 @@
             body: JSON.stringify({
                 "Candidate ID": candidateID,
                 "Name": name,
-                "Phone": phone,
+                "Email": email,
                 "ZIP": zip,
                 "_subject": "NEW 4BUDS CANDIDATE: " + candidateID
             })
