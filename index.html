@@ -1,3 +1,4 @@
+HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -109,6 +110,12 @@
             margin: 15px 0;
             background: #0b0e14;
         }
+        .transmission-box {
+            background: #08101a;
+            border-left: 3px solid #2196f3;
+            padding: 14px;
+            margin: 15px 0;
+        }
     </style>
 </head>
 <body>
@@ -205,16 +212,26 @@
             </div>
         </div>
 
-        <!-- COMPLETION CARD (STAGE 6 COMPLETE) -->
+        <!-- COMPLETION CARD & SPECIAL AGENT TRANSMISSION (STAGE 6 COMPLETE) -->
         <div id="completion-content" style="display: none;">
-            <p style="color: #4caf50; font-weight: bold;">QUALIFICATION COMPLETE // OPERATIVE CREDENTIAL ISSUED</p>
+            <p style="color: #4caf50; font-weight: bold; letter-spacing: 1px;">/// EVALUATION PHASE COMPLETE ///</p>
+            
+            <div class="transmission-box">
+                <p style="color: #2196f3; font-weight: bold; margin-top: 0; font-size: 0.8rem;">[CLANDESTINE DIRECTIVE // HIGH COMMAND ENCRYPTED TRANSMISSION]</p>
+                <p><strong>OPERATIVE STATUS:</strong> EVALUATION VERIFIED (6/6 STAGES COMPLETE)</p>
+                <p>You have successfully logged all required operational directives. Your qualification logs have been encrypted and submitted to Directorate Review. Official membership authorization for 4Buds.com is currently <strong>PENDING EXECUTIVE CLEARANCE</strong>.</p>
+                <p>Do not contact Command. If cleared, you will receive an encrypted dispatch detailing the date, time, and tactical grid coordinates for the <strong>Official Induction &amp; Awards Ceremony</strong> at an undisclosed venue within your local sector.</p>
+                <p style="color: #e2e8f0; font-style: italic; font-size: 0.8rem; margin-bottom: 0;">Maintain operational security. Vigilance is absolute.</p>
+            </div>
+
             <div class="card-box">
-                <p><strong>4BUDS.COM // OPERATIVE MEMBERSHIP CARD</strong></p>
+                <p><strong>4BUDS.COM // PROVISIONAL OPERATIVE CREDENTIAL</strong></p>
                 <p>OPERATIVE ID: <span id="card-id" style="color: #e2e8f0; font-weight: bold;"></span></p>
                 <p>SECTOR CODE: <span id="card-sector" style="color: #e2e8f0; font-weight: bold;"></span></p>
-                <p>STATUS: <span class="status-complete">VERIFIED MEMBER</span></p>
+                <p>STATUS: <span class="status-complete">CLEARANCE PENDING CEREMONY DISPATCH</span></p>
             </div>
-            <button onclick="resetTerminal()" style="border-color: #8b0000; color: #ff6b6b;">RESET TERMINAL</button>
+            
+            <button onclick="resetTerminal()" style="border-color: #8b0000; color: #ff6b6b; margin-top: 10px;">PURGE TERMINAL RECORD</button>
         </div>
     </div>
 
@@ -307,7 +324,7 @@
         if (status === 'VERIFIED_OPERATIVE') {
             document.getElementById('directive-content').style.display = 'none';
             document.getElementById('completion-content').style.display = 'block';
-            document.getElementById('display-status').innerText = 'VERIFIED OPERATIVE';
+            document.getElementById('display-status').innerText = 'EVALUATION COMPLETE // CLEARANCE PENDING';
             document.getElementById('display-status').className = 'status-complete';
             document.getElementById('card-id').innerText = id;
             document.getElementById('card-sector').innerText = zip;
@@ -384,7 +401,7 @@
                 loadTerminalState();
             } else {
                 localStorage.setItem('4buds_status', 'VERIFIED_OPERATIVE');
-                alert('QUALIFICATION COMPLETE. OPERATIVE CREDENTIAL ISSUED.');
+                alert('ALL EVALUATION DIRECTIVES LOGGED. HIGH COMMAND DISPATCH ISSUED.');
                 loadTerminalState();
             }
         } else {
