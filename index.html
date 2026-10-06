@@ -59,6 +59,11 @@
             background: #1e2638;
             color: #ffffff;
         }
+        button:disabled {
+            border-color: #1a2230;
+            color: #414d5d;
+            cursor: not-allowed;
+        }
         input[type="text"], input[type="tel"] {
             background: #0b0e14;
             border: 1px solid #2b3b54;
@@ -81,6 +86,16 @@
             font-size: 0.85rem;
             margin: 12px 0;
             letter-spacing: 1px;
+        }
+        .timer-box {
+            background: #140d0d;
+            border: 1px solid #542b2b;
+            color: #ff6b6b;
+            padding: 12px;
+            font-size: 0.9rem;
+            margin: 15px 0;
+            text-align: center;
+            letter-spacing: 2px;
         }
         .status-active {
             color: #4caf50;
@@ -115,14 +130,14 @@
     <div id="page-2" style="display: none;">
         <h2>4BUDS.COM // PROTOCOL</h2>
         <p>We are not a government organization. We are a Movement.</p>
-        <p>The 4Buds.com qualification sequence is a 6-week candidate assessment evaluation. Exclusivity is absolute. Few earn placement.</p>
+        <p>The 4Buds.com qualification sequence is a candidate evaluation. Exclusivity is absolute. Few earn placement.</p>
         <p><strong>CONDITIONS OF EVALUATION:</strong></p>
         <ol style="padding-left: 18px;">
-            <li>TIMELINE: 6 consecutive weeks of active execution.</li>
+            <li>TIMELINE: Directives are strictly time-locked. A mandatory 24-hour verification window applies between stages.</li>
+            <li>PHOTOGRAPHIC RECORD: Candidates must document each directive by posting required imagery on social media with hashtag #4Buds.com.</li>
             <li>VOLUNTARY WITHDRAWAL: You may terminate your application at any time via the TERMINAL interface.</li>
-            <li>INDEPENDENT ENTITY: 4Buds.com holds no affiliation with any municipal, state, or federal government agency.</li>
-            <li>LAWFUL CONDUCT: Candidates must adhere strictly to all local, state, and federal laws. Compliance is mandatory.</li>
-            <li>NON-DISCLOSURE: Directives and candidate clearance codes are strictly non-transferable.</li>
+            <li>INDEPENDENT ENTITY: 4Buds.com holds no affiliation with any government agency.</li>
+            <li>LAWFUL CONDUCT: Candidates must adhere strictly to all local laws.</li>
         </ol>
         <hr>
         <div class="btn-group">
@@ -151,7 +166,7 @@
             </div>
         </form>
         <hr>
-        <div class="footer-note">WARNING: SUBMISSION COMMENCES 6-WEEK EVALUATION SEQUENCE.</div>
+        <div class="footer-note">WARNING: SUBMISSION COMMENCES TIME-LOCKED EVALUATION SEQUENCE.</div>
     </div>
 
     <!-- OPERATIVE TERMINAL SCREEN -->
@@ -170,16 +185,24 @@
                 <strong id="display-required-key" style="color: #e2e8f0;">ALIAS-JIM-VERIFIED</strong>
             </div>
 
-            <label style="font-size: 0.75rem;">ENTER DIRECTIVE CLEARANCE KEY TO LOG COMPLETION</label>
-            <input type="text" id="clearance-key" placeholder="TYPE OR PASTE CLEARANCE KEY HERE">
+            <!-- TIME LOCK TIMER DISPLAY -->
+            <div id="timer-container" class="timer-box" style="display: none;">
+                TIME-LOCK ACTIVE // NEXT DIRECTIVE UNLOCKS IN:<br>
+                <strong id="time-lock-clock" style="font-size: 1.2rem;">24:00:00</strong>
+            </div>
 
-            <div class="btn-group">
-                <button onclick="verifyKey()">SUBMIT TRANSMISSION</button>
-                <button onclick="showPage('page-1')" style="border-color: #8b0000; color: #ff6b6b;">ABORT SESSION</button>
+            <div id="input-container">
+                <label style="font-size: 0.75rem;">ENTER DIRECTIVE CLEARANCE KEY TO LOG COMPLETION</label>
+                <input type="text" id="clearance-key" placeholder="TYPE OR PASTE CLEARANCE KEY HERE">
+
+                <div class="btn-group">
+                    <button id="submit-btn" onclick="verifyKey()">SUBMIT TRANSMISSION</button>
+                    <button onclick="resetTerminal()" style="border-color: #8b0000; color: #ff6b6b;">ABORT SESSION</button>
+                </div>
             </div>
         </div>
 
-        <!-- COMPLETION CARD (WEEK 6) -->
+        <!-- COMPLETION CARD (STAGE 6 COMPLETE) -->
         <div id="completion-content" style="display: none;">
             <p style="color: #4caf50; font-weight: bold;">QUALIFICATION COMPLETE // OPERATIVE CREDENTIAL ISSUED</p>
             <div class="card-box">
@@ -188,46 +211,44 @@
                 <p>SECTOR CODE: <span id="card-sector" style="color: #e2e8f0; font-weight: bold;"></span></p>
                 <p>STATUS: <span class="status-complete">VERIFIED MEMBER</span></p>
             </div>
-            <button onclick="showPage('page-1')" style="border-color: #8b0000; color: #ff6b6b;">RESET TERMINAL</button>
+            <button onclick="resetTerminal()" style="border-color: #8b0000; color: #ff6b6b;">RESET TERMINAL</button>
         </div>
     </div>
 
 </div>
 
 <script>
-    let currentWeek = 1;
-    let currentCandidateID = "";
-    let currentZip = "";
+    let timerInterval = null;
 
     const DIRECTIVES = {
         1: {
             title: "DIRECTIVE 01: THE ALIAS PROTOCOL",
-            text: "Proceed to a local coffee establishment. Order any beverage using the alias 'Jim'. Take a seat and observe your surroundings. Once executed, enter the clearance key below to log completion.",
+            text: "Proceed to a local coffee establishment. Order any beverage using the alias 'Jim'. Take a photo of your coffee cup and post it on social media with the hashtag #4Buds.com. Once posted, enter the clearance key below.",
             key: "ALIAS-JIM-VERIFIED"
         },
         2: {
             title: "DIRECTIVE 02: FIELD MARKER PLACEMENT",
-            text: "Write '4Buds.com' on a plain piece of paper. Place it on a clean public surface, observe for 2 minutes from 20 paces, and retrieve it. Leave no trace. Once executed, enter the clearance key below to log completion.",
+            text: "Locate a local street sign in your sector. Take a photo of the street sign and post it on social media with the hashtag #4Buds.com. Once posted, enter the clearance key below.",
             key: "MARKER-CLEAN-RETRIEVED"
         },
         3: {
             title: "DIRECTIVE 03: TERMINAL PATTERN KEY",
-            text: "Transcribe the authorization string below directly into the input field to confirm active terminal access.",
+            text: "Observe any prominent building in your sector. Take a photo of the building and post it on social media with the hashtag #4Buds.com. Transcribe the authorization string below to log completion.",
             key: "4BUDS-PHASE-3-VERIFIED"
         },
         4: {
             title: "DIRECTIVE 04: ENVIRONMENTAL VIGILANCE",
-            text: "Select a window or desk at home. Spend 10 uninterrupted minutes observing and mentally logging 3 subtle details in your environment that you normally overlook. Once executed, enter the clearance key below to log completion.",
+            text: "Take a photo of yourself and post it on social media with the hashtag #4Buds.com. Once posted, enter the clearance key below to confirm verification.",
             key: "VIGILANCE-LOGGED"
         },
         5: {
             title: "DIRECTIVE 05: SECTOR BROADCAST",
-            text: "Post a high-contrast black-and-white photograph of any door, gate, or entrance structure to social media. Caption with only: #4Buds.com. Once posted, enter the clearance key below to log completion.",
+            text: "Locate any unique door, gate, or entrance structure. Take a high-contrast photo of the entrance and post it on social media with the hashtag #4Buds.com. Once posted, enter the clearance key below.",
             key: "SECTOR-SIGNAL-LIVE"
         },
         6: {
             title: "DIRECTIVE 06: INDUCTION PROTOCOL",
-            text: "Final transmission. Send the following exact message to your most trusted associate via text: Are you ready 4buds.com. Once transmitted, enter the clearance key below to complete qualification.",
+            text: "Final transmission. Send the text 'Are you ready 4buds.com' to a trusted associate, take a photo or screenshot of the message, and post it with hashtag #4Buds.com. Enter key below to complete qualification.",
             key: "TRANSMITTED-4BUDS"
         }
     };
@@ -246,65 +267,148 @@
         
         const name = document.getElementById('candidate-name').value;
         const phone = document.getElementById('candidate-phone').value;
-        currentZip = document.getElementById('candidate-zip').value;
-        currentCandidateID = 'BD-' + Math.floor(1000 + Math.random() * 9000);
-        currentWeek = 1;
+        const zip = document.getElementById('candidate-zip').value;
+        const candidateID = 'BD-' + Math.floor(1000 + Math.random() * 9000);
 
-        // Formsubmit silent trigger
+        localStorage.setItem('4buds_id', candidateID);
+        localStorage.setItem('4buds_zip', zip);
+        localStorage.setItem('4buds_week', '1');
+        localStorage.setItem('4buds_status', 'ACTIVE');
+        localStorage.removeItem('4buds_unlock_time');
+
+        // Formsubmit silently forwards registration data
         fetch("https://formsubmit.co/ajax/All4aim@hotmail.com", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                "Candidate ID": currentCandidateID,
+                "Candidate ID": candidateID,
                 "Name": name,
                 "Phone": phone,
-                "ZIP": currentZip,
-                "_subject": "NEW 4BUDS CANDIDATE: " + currentCandidateID
+                "ZIP": zip,
+                "_subject": "NEW 4BUDS CANDIDATE: " + candidateID
             })
         }).catch(err => console.log(err));
 
-        renderTerminal();
+        loadTerminalState();
         showPage('page-terminal');
     }
 
-    function renderTerminal() {
-        document.getElementById('display-candidate-id').innerText = currentCandidateID;
+    function loadTerminalState() {
+        const id = localStorage.getItem('4buds_id') || 'BD-TEST';
+        const zip = localStorage.getItem('4buds_zip') || 'SECTOR-00000';
+        const currentWeek = parseInt(localStorage.getItem('4buds_week') || '1');
+        const status = localStorage.getItem('4buds_status') || 'ACTIVE';
+        const unlockTime = parseInt(localStorage.getItem('4buds_unlock_time') || '0');
 
-        if (currentWeek > 6) {
+        document.getElementById('display-candidate-id').innerText = id;
+
+        if (status === 'VERIFIED_OPERATIVE') {
             document.getElementById('directive-content').style.display = 'none';
             document.getElementById('completion-content').style.display = 'block';
             document.getElementById('display-status').innerText = 'VERIFIED OPERATIVE';
             document.getElementById('display-status').className = 'status-complete';
-            document.getElementById('card-id').innerText = currentCandidateID;
-            document.getElementById('card-sector').innerText = currentZip;
+            document.getElementById('card-id').innerText = id;
+            document.getElementById('card-sector').innerText = zip;
+            return;
+        }
+
+        document.getElementById('directive-content').style.display = 'block';
+        document.getElementById('completion-content').style.display = 'none';
+        document.getElementById('display-status').innerText = 'ACTIVE (STAGE ' + currentWeek + ' / 6)';
+        
+        const dir = DIRECTIVES[currentWeek];
+        document.getElementById('directive-title').innerText = dir.title;
+        document.getElementById('directive-text').innerText = dir.text;
+        document.getElementById('display-required-key').innerText = dir.key;
+        document.getElementById('clearance-key').value = '';
+
+        // Check 24-hour time-lock state
+        const now = Date.now();
+        if (unlockTime && now < unlockTime) {
+            // Lock controls and start countdown clock
+            document.getElementById('timer-container').style.display = 'block';
+            document.getElementById('input-container').style.display = 'none';
+            startCountdown(unlockTime);
         } else {
-            document.getElementById('directive-content').style.display = 'block';
-            document.getElementById('completion-content').style.display = 'none';
-            document.getElementById('display-status').innerText = 'ACTIVE (STAGE ' + currentWeek + ' / 6)';
-            
-            const dir = DIRECTIVES[currentWeek];
-            document.getElementById('directive-title').innerText = dir.title;
-            document.getElementById('directive-text').innerText = dir.text;
-            document.getElementById('display-required-key').innerText = dir.key;
-            document.getElementById('clearance-key').value = '';
+            // Unlock controls
+            document.getElementById('timer-container').style.display = 'none';
+            document.getElementById('input-container').style.display = 'block';
+            if (timerInterval) clearInterval(timerInterval);
         }
     }
 
-    function verifyKey() {
-        const keyInput = document.getElementById('clearance-key').value.trim().toUpperCase();
+    function startCountdown(unlockTime) {
+        if (timerInterval) clearInterval(timerInterval);
 
-        if (keyInput === DIRECTIVES[currentWeek].key) {
-            currentWeek++;
-            if (currentWeek <= 6) {
-                alert('CLEARANCE VERIFIED. ADVANCING TO STAGE ' + currentWeek);
+        timerInterval = setInterval(() => {
+            const now = Date.now();
+            const distance = unlockTime - now;
+
+            if (distance <= 0) {
+                clearInterval(timerInterval);
+                localStorage.removeItem('4buds_unlock_time');
+                loadTerminalState();
             } else {
-                alert('QUALIFICATION COMPLETE. CREDENTIAL ISSUED.');
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                const hStr = hours < 10 ? '0' + hours : hours;
+                const mStr = minutes < 10 ? '0' + minutes : minutes;
+                const sStr = seconds < 10 ? '0' + seconds : seconds;
+
+                document.getElementById('time-lock-clock').innerText = hStr + ':' + mStr + ':' + sStr;
             }
-            renderTerminal();
+        }, 1000);
+    }
+
+    function verifyKey() {
+        const inputKey = document.getElementById('clearance-key').value.trim().toUpperCase();
+        let currentWeek = parseInt(localStorage.getItem('4buds_week') || '1');
+
+        if (!inputKey) {
+            alert('ERR: TRANSMISSION EMPTY');
+            return;
+        }
+
+        if (inputKey === DIRECTIVES[currentWeek].key) {
+            if (currentWeek < 6) {
+                currentWeek++;
+                localStorage.setItem('4buds_week', currentWeek);
+                
+                // Set 24-Hour Time-Lock (24 * 60 * 60 * 1000 ms)
+                const unlockTime = Date.now() + (24 * 60 * 60 * 1000);
+                localStorage.setItem('4buds_unlock_time', unlockTime);
+
+                alert('CLEARANCE VERIFIED. STAGE ' + (currentWeek - 1) + ' LOGGED. 24-HOUR TIME-LOCK ENGAGED.');
+                loadTerminalState();
+            } else {
+                localStorage.setItem('4buds_status', 'VERIFIED_OPERATIVE');
+                alert('QUALIFICATION COMPLETE. OPERATIVE CREDENTIAL ISSUED.');
+                loadTerminalState();
+            }
         } else {
             alert('ERR: INVALID CLEARANCE KEY. RE-ENTER REQUIRED KEY.');
         }
     }
+
+    function resetTerminal() {
+        if(confirm('Purge candidate terminal record and reset progress?')) {
+            localStorage.clear();
+            if (timerInterval) clearInterval(timerInterval);
+            showPage('page-1');
+        }
+    }
+
+    window.onload = function() {
+        const savedID = localStorage.getItem('4buds_id');
+        if (savedID) {
+            loadTerminalState();
+            showPage('page-terminal');
+        } else {
+            showPage('page-1');
+        }
+    };
 </script>
 
 </body>
