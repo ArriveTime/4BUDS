@@ -80,12 +80,13 @@
 <body>
 
 <div class="container">
+
     <!-- PAGE 1: THE GATE -->
     <div id="page-1">
         <h1>Are you ready 4Buds.com?</h1>
         <div class="btn-group">
             <button onclick="goToPage(2)">YES</button>
-            <button onclick="alert('Access declined.')">NO</button>
+            <button onclick="alert('Access declined. Session closed.')">NO</button>
         </div>
         <hr>
         <div class="footer-note">We are not a government organization.</div>
@@ -111,26 +112,48 @@
         </div>
     </div>
 
-    <!-- PAGE 3: INITIALIZATION -->
+    <!-- PAGE 3: CANDIDATE INITIALIZATION -->
     <div id="page-3" class="hidden">
         <h2>4BUDS.COM // TERMINAL INITIALIZATION</h2>
         <p>CANDIDATE RECORD PARAMETERS:</p>
         
-        <label style="font-size: 0.75rem;">FULL NAME</label>
-        <input type="text" id="candidate-name" placeholder="E.G. JOHN DOE">
+        <form id="init-form" onsubmit="handleRegistration(event)">
+            <label style="font-size: 0.75rem;">FULL NAME</label>
+            <input type="text" id="candidate-name" required placeholder="E.G. JOHN DOE">
 
-        <label style="font-size: 0.75rem;">CELLULAR CONTACT</label>
-        <input type="tel" id="candidate-phone" placeholder="E.G. 555-0199">
+            <label style="font-size: 0.75rem;">CELLULAR CONTACT</label>
+            <input type="tel" id="candidate-phone" required placeholder="E.G. 555-0199">
 
-        <label style="font-size: 0.75rem;">SECTOR / ZIP CODE</label>
-        <input type="text" id="candidate-zip" placeholder="E.G. 23185">
+            <label style="font-size: 0.75rem;">SECTOR / ZIP CODE</label>
+            <input type="text" id="candidate-zip" required placeholder="E.G. 23185">
 
-        <div class="btn-group">
-            <button onclick="initializeTerminal()">INITIALIZE EVALUATION</button>
-        </div>
+            <div class="btn-group">
+                <button type="submit" id="submit-btn">INITIALIZE EVALUATION</button>
+            </div>
+        </form>
         <hr>
         <div class="footer-note">WARNING: SUBMISSION COMMENCES 6-WEEK TIME-LOCK SEQUENCE.</div>
     </div>
+
+    <!-- TERMINAL SCREEN (UNLOCKED AFTER REGISTRATION) -->
+    <div id="page-terminal" class="hidden">
+        <h2>4BUDS.COM // OPERATIVE TERMINAL</h2>
+        <p>CANDIDATE ID: <span id="display-candidate-id" style="color: #e2e8f0;"></span></p>
+        <p>EVALUATION STATUS: <span style="color: #4caf50;">ACTIVE (WEEK 1 / DIRECTIVE 01)</span></p>
+        <hr>
+        <p><strong>DIRECTIVE 01: THE ALIAS PROTOCOL</strong></p>
+        <p>Proceed to the nearest coffee establishment. Order any beverage using the alias "Jim". Take a seat. Observe your surroundings.</p>
+        <p>Clearance Key required to verify completion.</p>
+
+        <label style="font-size: 0.75rem;">ENTER DIRECTIVE CLEARANCE KEY</label>
+        <input type="text" id="clearance-key" placeholder="ENTER CLEARANCE CODE">
+
+        <div class="btn-group">
+            <button onclick="verifyKey()">SUBMIT TRANSMISSION</button>
+            <button onclick="abortCandidate()" style="border-color: #8b0000; color: #ff6b6b;">ABORT SESSION</button>
+        </div>
+    </div>
+
 </div>
 
 <script>
@@ -138,14 +161,85 @@
         document.getElementById('page-1').classList.add('hidden');
         document.getElementById('page-2').classList.add('hidden');
         document.getElementById('page-3').classList.add('hidden');
-        document.getElementById('page-' + pageNum).classList.remove('hidden');
+        document.getElementById('page-terminal').classList.add('hidden');
+
+        if(pageNum === 'terminal') {
+            document.getElementById('page-terminal').classList.remove('hidden');
+        } else {
+            document.getElementById('page-' + pageNum).classList.remove('hidden');
+        }
     }
 
-    function initializeTerminal() {
+    function handleRegistration(event) {
+        event.preventDefault();
+
+        const btn = document.getElementById('submit-btn');
+        btn.innerText = 'TRANSMITTING...';
+        btn.disabled = true;
+
         const name = document.getElementById('candidate-name').value;
-        if(!name) { alert('PARAMETERS INCOMPLETE'); return; }
-        alert('CANDIDATE RECORD INITIALIZED. TERMINAL TIME-LOCK ACTIVE.');
+        const phone = document.getElementById('candidate-phone').value;
+        const zip = document.getElementById('candidate-zip').value;
+
+        // Generate unique candidate ID
+        const candidateID = 'BD-' + Math.floor(1000 + Math.random() * 9000);
+
+        const formData = {
+            "Candidate ID": candidateID,
+            "Full Name": name,
+            "Cell Phone": phone,
+            "Sector ZIP": zip,
+            "_subject": "NEW 4BUDS CANDIDATE INITIALIZED: " + candidateID
+        };
+
+        // Send submission secretly to Formsubmit
+        fetch("https://formsubmit.co/ajax/All4aim@hotmail.com", {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            saveAndLaunch(candidateID);
+        })
+        .catch(error => {
+            // Backup launch if network has a temporary hitch
+            saveAndLaunch(candidateID);
+        });
     }
+
+    function saveAndLaunch(id) {
+        localStorage.setItem('4buds_id', id);
+        localStorage.setItem('4buds_start', Date.now());
+        document.getElementById('display-candidate-id').innerText = id;
+        goToPage('terminal');
+    }
+
+    function verifyKey() {
+        const key = document.getElementById('clearance-key').value.trim();
+        if(!key) { alert('ERR: TRANSMISSION EMPTY'); return; }
+        alert('CLEARANCE KEY SUBMITTED. VERIFICATION IN PROGRESS. STAND BY FOR TIME-LOCK RELEASE.');
+    }
+
+    function abortCandidate() {
+        if(confirm('WARNING: Permanent withdrawal will purge your candidate record. Proceed?')) {
+            localStorage.clear();
+            alert('RECORD PURGED. APPLICATION TERMINATED.');
+            goToPage(1);
+        }
+    }
+
+    // Auto-load terminal if candidate already initialized in this browser
+    window.onload = function() {
+        const savedID = localStorage.getItem('4buds_id');
+        if(savedID) {
+            document.getElementById('display-candidate-id').innerText = savedID;
+            goToPage('terminal');
+        }
+    };
 </script>
 
 </body>
