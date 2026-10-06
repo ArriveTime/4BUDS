@@ -53,6 +53,7 @@
             font-size: 0.85rem;
             cursor: pointer;
             margin-right: 10px;
+            margin-bottom: 5px;
         }
         button:hover {
             background: #1e2638;
@@ -73,7 +74,7 @@
             color: #525e6f;
         }
         .hidden {
-            display: none;
+            display: none !important;
         }
         .highlight {
             color: #e2e8f0;
@@ -110,8 +111,8 @@
     <div id="page-1">
         <h1>Are you ready 4Buds.com?</h1>
         <div class="btn-group">
-            <button onclick="goToPage(2)">YES</button>
-            <button onclick="alert('Access declined. Session closed.')">NO</button>
+            <button type="button" onclick="goToPage(2)">YES</button>
+            <button type="button" onclick="alert('Access declined. Session closed.')">NO</button>
         </div>
         <hr>
         <div class="footer-note">We are not a government organization.</div>
@@ -132,8 +133,8 @@
         </ol>
         <hr>
         <div class="btn-group">
-            <button onclick="goToPage(3)">ACCEPT PROTOCOL</button>
-            <button onclick="goToPage(1)">ABORT</button>
+            <button type="button" onclick="goToPage(3)">ACCEPT PROTOCOL</button>
+            <button type="button" onclick="goToPage(1)">ABORT</button>
         </div>
     </div>
 
@@ -180,8 +181,8 @@
             <input type="text" id="clearance-key" placeholder="TYPE OR PASTE CLEARANCE KEY HERE">
 
             <div class="btn-group">
-                <button onclick="verifyKey()">SUBMIT TRANSMISSION</button>
-                <button onclick="abortCandidate()" style="border-color: #8b0000; color: #ff6b6b;">ABORT SESSION</button>
+                <button type="button" onclick="verifyKey()">SUBMIT TRANSMISSION</button>
+                <button type="button" onclick="abortCandidate()" style="border-color: #8b0000; color: #ff6b6b;">ABORT SESSION</button>
             </div>
         </div>
 
@@ -192,4 +193,53 @@
                 <p><strong>4BUDS.COM // OPERATIVE MEMBERSHIP CARD</strong></p>
                 <p>OPERATIVE ID: <span id="card-id" class="highlight"></span></p>
                 <p>SECTOR CODE: <span id="card-sector" class="highlight"></span></p>
-                <p>STATUS: <span class="status-complete">VERIFIED MEMBER</span>
+                <p>STATUS: <span class="status-complete">VERIFIED MEMBER</span></p>
+                <p style="font-size: 0.7rem; color: #525e6f;">AUTHORIZED FOR RECENT & UNANNOUNCED SECTOR EVENTS.</p>
+            </div>
+            <button type="button" onclick="abortCandidate()" style="border-color: #8b0000; color: #ff6b6b;">RESET TERMINAL</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const DIRECTIVES = {
+        1: {
+            title: "DIRECTIVE 01: THE ALIAS PROTOCOL",
+            text: "Proceed to a local coffee establishment. Order any beverage using the alias 'Jim'. Take a seat and observe your surroundings. Once executed, enter the clearance key below to log completion.",
+            key: "ALIAS-JIM-VERIFIED"
+        },
+        2: {
+            title: "DIRECTIVE 02: FIELD MARKER PLACEMENT",
+            text: "Write '4Buds.com' on a plain piece of paper. Place it on a clean public surface, observe for 2 minutes from 20 paces, and retrieve it. Leave no trace. Once executed, enter the clearance key below to log completion.",
+            key: "MARKER-CLEAN-RETRIEVED"
+        },
+        3: {
+            title: "DIRECTIVE 03: TERMINAL PATTERN KEY",
+            text: "Transcribe the authorization string below directly into the input field to confirm active terminal access.",
+            key: "4BUDS-PHASE-3-VERIFIED"
+        },
+        4: {
+            title: "DIRECTIVE 04: ENVIRONMENTAL VIGILANCE",
+            text: "Select a window or desk at home. Spend 10 uninterrupted minutes observing and mentally logging 3 subtle details in your environment that you normally overlook. Once executed, enter the clearance key below to log completion.",
+            key: "VIGILANCE-LOGGED"
+        },
+        5: {
+            title: "DIRECTIVE 05: SECTOR BROADCAST",
+            text: "Post a high-contrast black-and-white photograph of any door, gate, or entrance structure to social media. Caption with only: #4Buds.com. Once posted, enter the clearance key below to log completion.",
+            key: "SECTOR-SIGNAL-LIVE"
+        },
+        6: {
+            title: "DIRECTIVE 06: INDUCTION PROTOCOL",
+            text: "Final transmission. Send the following exact message to your most trusted associate via text: Are you ready 4buds.com. Once transmitted, enter the clearance key below to complete qualification.",
+            key: "TRANSMITTED-4BUDS"
+        }
+    };
+
+    function goToPage(target) {
+        document.getElementById('page-1').classList.add('hidden');
+        document.getElementById('page-2').classList.add('hidden');
+        document.getElementById('page-3').classList.add('hidden');
+        document.getElementById('page-terminal').classList.add('hidden');
+
+        if (target === 'terminal') {
