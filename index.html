@@ -44,7 +44,7 @@
         .btn-group {
             margin: 20px 0;
         }
-        button, .btn {
+        button {
             background: #0b0e14;
             color: #e2e8f0;
             border: 1px solid #2b3b54;
@@ -78,6 +78,15 @@
         .highlight {
             color: #e2e8f0;
             font-weight: bold;
+        }
+        .key-display {
+            background: #111722;
+            border: 1px dashed #2b3b54;
+            color: #4caf50;
+            padding: 10px;
+            font-size: 0.85rem;
+            margin: 12px 0;
+            letter-spacing: 1px;
         }
         .status-active {
             color: #4caf50;
@@ -115,7 +124,7 @@
         <p>The 4Buds.com qualification sequence is a 6-week candidate assessment evaluation. Exclusivity is absolute. Few earn placement.</p>
         <p><strong>CONDITIONS OF EVALUATION:</strong></p>
         <ol style="padding-left: 18px;">
-            <li>TIMELINE: 6 consecutive weeks of active execution. Failure to submit clearance keys within designated time windows results in immediate disqualification.</li>
+            <li>TIMELINE: 6 consecutive weeks of active execution.</li>
             <li>VOLUNTARY WITHDRAWAL: You may terminate your application at any time via the TERMINAL interface.</li>
             <li>INDEPENDENT ENTITY: 4Buds.com holds no affiliation with any municipal, state, or federal government agency.</li>
             <li>LAWFUL CONDUCT: Candidates must adhere strictly to all local, state, and federal laws. Compliance is mandatory.</li>
@@ -148,7 +157,7 @@
             </div>
         </form>
         <hr>
-        <div class="footer-note">WARNING: SUBMISSION COMMENCES 6-WEEK TIME-LOCK SEQUENCE.</div>
+        <div class="footer-note">WARNING: SUBMISSION COMMENCES 6-WEEK EVALUATION SEQUENCE.</div>
     </div>
 
     <!-- OPERATIVE TERMINAL SCREEN -->
@@ -162,8 +171,13 @@
             <p><strong id="directive-title">DIRECTIVE 01: THE ALIAS PROTOCOL</strong></p>
             <p id="directive-text">Loading transmission...</p>
 
-            <label style="font-size: 0.75rem;">ENTER DIRECTIVE CLEARANCE KEY</label>
-            <input type="text" id="clearance-key" placeholder="ENTER CLEARANCE CODE">
+            <div class="key-display">
+                REQUIRED CLEARANCE KEY:<br>
+                <strong id="display-required-key" class="highlight">ALIAS-JIM-VERIFIED</strong>
+            </div>
+
+            <label style="font-size: 0.75rem;">ENTER DIRECTIVE CLEARANCE KEY TO LOG COMPLETION</label>
+            <input type="text" id="clearance-key" placeholder="TYPE OR PASTE CLEARANCE KEY HERE">
 
             <div class="btn-group">
                 <button onclick="verifyKey()">SUBMIT TRANSMISSION</button>
@@ -178,181 +192,4 @@
                 <p><strong>4BUDS.COM // OPERATIVE MEMBERSHIP CARD</strong></p>
                 <p>OPERATIVE ID: <span id="card-id" class="highlight"></span></p>
                 <p>SECTOR CODE: <span id="card-sector" class="highlight"></span></p>
-                <p>STATUS: <span class="status-complete">VERIFIED MEMBER</span></p>
-                <p style="font-size: 0.7rem; color: #525e6f;">AUTHORIZED FOR RECENT & UNANNOUNCED SECTOR EVENTS.</p>
-            </div>
-            <button onclick="abortCandidate()" style="border-color: #8b0000; color: #ff6b6b;">RESET TERMINAL</button>
-        </div>
-    </div>
-
-</div>
-
-<script>
-    // Master Directive Database
-    const DIRECTIVES = {
-        1: {
-            title: "DIRECTIVE 01: THE ALIAS PROTOCOL",
-            text: "Proceed to a local coffee establishment. Order any beverage using the alias 'Jim'. Take a seat and observe your surroundings.",
-            key: "ALIAS-JIM-VERIFIED"
-        },
-        2: {
-            title: "DIRECTIVE 02: FIELD MARKER PLACEMENT",
-            text: "Write '4Buds.com' on a plain piece of paper. Place it on a clean public surface, observe for 2 minutes from 20 paces, and retrieve it. Leave no trace.",
-            key: "MARKER-CLEAN-RETRIEVED"
-        },
-        3: {
-            title: "DIRECTIVE 03: TERMINAL PATTERN KEY",
-            text: "Transcribe the following operational authorization string exactly as displayed: 4BUDS-PHASE-3-VERIFIED",
-            key: "4BUDS-PHASE-3-VERIFIED"
-        },
-        4: {
-            title: "DIRECTIVE 04: ENVIRONMENTAL VIGILANCE",
-            text: "Select a window or desk at home. Spend 10 uninterrupted minutes observing and mentally logging 3 subtle details in your environment that you normally overlook.",
-            key: "VIGILANCE-LOGGED"
-        },
-        5: {
-            title: "DIRECTIVE 05: SECTOR BROADCAST",
-            text: "Post a high-contrast black-and-white photograph of any door, gate, or entrance structure to social media. Caption with only: #4Buds.com",
-            key: "SECTOR-SIGNAL-LIVE"
-        },
-        6: {
-            title: "DIRECTIVE 06: INDUCTION PROTOCOL",
-            text: "Final transmission. Send the following exact message to your most trusted associate via text: Are you ready 4buds.com",
-            key: "TRANSMITTED-4BUDS"
-        }
-    };
-
-    function goToPage(pageNum) {
-        document.getElementById('page-1').classList.add('hidden');
-        document.getElementById('page-2').classList.add('hidden');
-        document.getElementById('page-3').classList.add('hidden');
-        document.getElementById('page-terminal').classList.add('hidden');
-
-        if(pageNum === 'terminal') {
-            document.getElementById('page-terminal').classList.remove('hidden');
-        } else {
-            document.getElementById('page-' + pageNum).classList.remove('hidden');
-        }
-    }
-
-    function handleRegistration(event) {
-        event.preventDefault();
-
-        const btn = document.getElementById('submit-btn');
-        btn.innerText = 'TRANSMITTING...';
-        btn.disabled = true;
-
-        const name = document.getElementById('candidate-name').value;
-        const phone = document.getElementById('candidate-phone').value;
-        const zip = document.getElementById('candidate-zip').value;
-
-        // Generate unique candidate ID
-        const candidateID = 'BD-' + Math.floor(1000 + Math.random() * 9000);
-
-        const formData = {
-            "Candidate ID": candidateID,
-            "Full Name": name,
-            "Cell Phone": phone,
-            "Sector ZIP": zip,
-            "_subject": "NEW 4BUDS CANDIDATE INITIALIZED: " + candidateID
-        };
-
-        // Send submission secretly to Formsubmit
-        fetch("https://formsubmit.co/ajax/All4aim@hotmail.com", {
-            method: "POST",
-            headers: { 
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            body: JSON.stringify(formData)
-        })
-        .then(response => response.json())
-        .then(data => {
-            saveAndLaunch(candidateID, zip);
-        })
-        .catch(error => {
-            saveAndLaunch(candidateID, zip);
-        });
-    }
-
-    function saveAndLaunch(id, zip) {
-        localStorage.setItem('4buds_id', id);
-        localStorage.setItem('4buds_zip', zip);
-        localStorage.setItem('4buds_week', '1');
-        localStorage.setItem('4buds_status', 'ACTIVE');
-        loadTerminalState();
-        goToPage('terminal');
-    }
-
-    function loadTerminalState() {
-        const id = localStorage.getItem('4buds_id');
-        const zip = localStorage.getItem('4buds_zip') || 'SECTOR-UNKNOWN';
-        const currentWeek = parseInt(localStorage.getItem('4buds_week') || '1');
-        const status = localStorage.getItem('4buds_status') || 'ACTIVE';
-
-        document.getElementById('display-candidate-id').innerText = id;
-
-        if (status === 'VERIFIED_OPERATIVE') {
-            document.getElementById('directive-content').classList.add('hidden');
-            document.getElementById('completion-content').classList.remove('hidden');
-            document.getElementById('display-status').innerText = 'VERIFIED OPERATIVE';
-            document.getElementById('display-status').className = 'status-complete';
-            document.getElementById('card-id').innerText = id;
-            document.getElementById('card-sector').innerText = zip;
-        } else {
-            document.getElementById('directive-content').classList.remove('hidden');
-            document.getElementById('completion-content').classList.add('hidden');
-            document.getElementById('display-status').innerText = 'ACTIVE (STAGE ' + currentWeek + ' / 6)';
-            
-            const dir = DIRECTIVES[currentWeek];
-            document.getElementById('directive-title').innerText = dir.title;
-            document.getElementById('directive-text').innerText = dir.text;
-            document.getElementById('clearance-key').value = '';
-        }
-    }
-
-    function verifyKey() {
-        const inputKey = document.getElementById('clearance-key').value.trim().toUpperCase();
-        let currentWeek = parseInt(localStorage.getItem('4buds_week') || '1');
-
-        if (!inputKey) {
-            alert('ERR: TRANSMISSION EMPTY');
-            return;
-        }
-
-        if (inputKey === DIRECTIVES[currentWeek].key) {
-            if (currentWeek < 6) {
-                currentWeek++;
-                localStorage.setItem('4buds_week', currentWeek);
-                alert('CLEARANCE VERIFIED. STAGE ADVANCED TO DIRECTIVE ' + currentWeek);
-                loadTerminalState();
-            } else {
-                localStorage.setItem('4buds_status', 'VERIFIED_OPERATIVE');
-                alert('QUALIFICATION COMPLETE. OPERATIVE CREDENTIAL ISSUED.');
-                loadTerminalState();
-            }
-        } else {
-            alert('ERR: INVALID CLEARANCE KEY. RE-VERIFY DIRECTIVE PARAMETERS.');
-        }
-    }
-
-    function abortCandidate() {
-        if(confirm('WARNING: Permanent withdrawal will purge your candidate record. Proceed?')) {
-            localStorage.clear();
-            alert('RECORD PURGED. APPLICATION TERMINATED.');
-            goToPage(1);
-        }
-    }
-
-    // Auto-load terminal if already registered
-    window.onload = function() {
-        const savedID = localStorage.getItem('4buds_id');
-        if(savedID) {
-            loadTerminalState();
-            goToPage('terminal');
-        }
-    };
-</script>
-
-</body>
-</html>
+                <p>STATUS: <span class="status-complete">VERIFIED MEMBER</span>
