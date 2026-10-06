@@ -190,6 +190,9 @@ HTML
             <div id="timer-container" class="timer-box" style="display: none;">
                 TIME-LOCK ACTIVE // NEXT DIRECTIVE UNLOCKS IN:<br>
                 <strong id="time-lock-clock" style="font-size: 1.2rem;">24:00:00</strong>
+                <div style="margin-top: 15px;">
+                    <button onclick="resetTerminal()" style="border-color: #8b0000; color: #ff6b6b;">ABORT SESSION</button>
+                </div>
             </div>
 
             <div id="input-container">
@@ -277,7 +280,6 @@ HTML
         localStorage.setItem('4buds_status', 'ACTIVE');
         localStorage.removeItem('4buds_unlock_time');
 
-        // Formsubmit endpoint updated with secure token e4077274e499dc5b0331d721f4ce7ee5
         fetch("https://formsubmit.co/ajax/e4077274e499dc5b0331d721f4ce7ee5", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
